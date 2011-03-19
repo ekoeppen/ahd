@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<body xmlns:ahd="urn:ahd" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+	<div name="element">
+		Click me!
+		<ahd:var name="foo">This is foo</ahd:var>
+		<ahd:func name="bar"><![CDATA[
+alert('Called bar on ' + this.getAttribute('name') + " var = " + this.get('foo') + " arg x = " + args.x);
+		]]></ahd:func>
+	</div>
+
+<xhtml:script type="text/javascript">
+<![CDATA[
+	var functions, i, vars, n;
+	functions = document.getElementsByTagName("func");
+	for (i = 0; i < functions.length; i++) {
+		n = functions[i].getAttribute("name");
+		functions[i].parentNode[n] = Function("args", functions[i].textContent);
+//		functions[i].parentNode.call = function(name, args) {
+//			this[name](args);
+//		}
+	}
+	vars = document.getElementsByTagName("var");
+	for (i = 0; i < vars.length; i++) {
+	/*
+		vars[i].parentNode.get = function(n) {
+			var j, node;
+			for (j = 0; j < this.childNodes.length; j++) {
+				node = this.childNodes[j];
+				if (node.localName == "var" && node.getAttribute("name") == n) {
+					return node.textContent;
+				}
+			}
+		}
+
+		vars[i].parentNode.set = function(n, v) {
+			var j, node;
+			for (j = 0; j < this.childNodes.length; j++) {
+				node = this.childNodes[j];
+				if (node.localName == "var" && node.getAttribute("name") == n) {
+					node.textContent = v;
+				}
+			}
+		}
+	*/
+	}
+
+	Node.prototype.call = function(name, args) {
+		this[name](args);
+	}
+	
+	Node.prototype.get = function(n) {
+		var j, node;
+		for (j = 0; j < this.childNodes.length; j++) {
+			node = this.childNodes[j];
+			if (node.localName == "var" && node.getAttribute("name") == n) {
+				return node.textContent;
+			}
+		}
+	}
+
+	Node.prototype.set = function(n, v) {
+		var j, node;
+		for (j = 0; j < this.childNodes.length; j++) {
+			node = this.childNodes[j];
+			if (node.localName == "var" && node.getAttribute("name") == n) {
+				node.textContent = v;
+			}
+		}
+	}
+	
+	document.getElementsByTagName("div")[0].addEventListener('click', function() {
+		this.call('bar', {x: 3});
+	}, false);
+]]>
+</xhtml:script>
+</body>
