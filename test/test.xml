@@ -5,7 +5,13 @@
 		Click me!
 		<ahd:var name="foo">This is foo</ahd:var>
 		<ahd:func name="bar"><![CDATA[
-alert('Called bar on ' + this.getAttribute('name') + " var = " + this.get('foo') + " arg x = " + args.x);
+alert('Called bar on ' + this.getAttribute('name') +
+	" foo = " + this.get('foo') +
+	" arg x = " + args.x);
+this.call('baz');
+		]]></ahd:func>
+		<ahd:func name="baz"><![CDATA[
+alert('Called baz');
 		]]></ahd:func>
 	</div>
 	
