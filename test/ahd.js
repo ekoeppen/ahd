@@ -1,10 +1,20 @@
-Node.prototype.parentLookup = function(element, name) {
-    return undefined;
+Node.prototype.parentLookup$ = function(element, attr, name) {
+    var node, child, r, i;
+
+    for (node = this.parentNode; node && r === undefined; node = node.parentNode) {
+        for (i = 0; i < node.childNodes.length && r === undefined; i++) {
+            child = node.childNodes[i];
+            if (child.localName == element && child.getAttribute(attr) == name) {
+                r = node;
+            }
+        }
+    }
+    return r;
 };
 
-Node.prototype.prime = function (element) {
+Node.prototype.prime$ = function (element) {
     var i, node;
-    this.primed = true;
+    this.primed$ = true;
     for (i = 0; i < this.childNodes.length; i++) {
 		node = this.childNodes[i];
 		if (node.localName == "func") {
@@ -22,11 +32,11 @@ Node.prototype.call$ = function(name, args) {
     
     if (this[name]) {
 	    r = this[name](args);
-    } else if (this.primed) {
-        node = this.parentLookup('func', name);
+    } else if (this.primed$) {
+        node = this.parentLookup$('func', 'name', name);
         if (node) node.call$(name, args); else this.noSuchMethod(name, args);
     } else {
-        this.prime();
+        this.prime$();
         this.call$(name, args);
     }
     return r;

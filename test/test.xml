@@ -1,18 +1,30 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/css" href="style.css"?>
 <body xmlns:ahd="urn:ahd" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-	<div name="element">
-		Click me!
-		<ahd:var name="foo">This is foo</ahd:var>
-		<ahd:func name="bar"><![CDATA[
-alert('Called bar on ' + this.getAttribute('name') +
-	" foo = " + this.get('foo') +
-	" arg x = " + args.x);
-this.call('baz');
-		]]></ahd:func>
-		<ahd:func name="baz"><![CDATA[
-alert('Called baz');
-		]]></ahd:func>
+	<div name="parent">
+		Parent
+		<ahd:func name="bang"><![CDATA[
+			var edit = document.createElementNS('http://www.w3.org/1999/xhtml','input');
+			this.appendChild(edit);
+		]]>
+		</ahd:func>
+
+		<div name="element">
+			Click me!
+			<ahd:var name="foo">This is foo</ahd:var>
+			<ahd:func name="bar"><![CDATA[
+	alert('Called bar on ' + this.getAttribute('name') +
+		" foo = " + this.get$('foo') +
+		" arg x = " + args.x);
+	this.call$('baz');
+			]]>
+			</ahd:func>
+			<ahd:func name="baz"><![CDATA[
+	alert('Called baz');
+	this.call$('bang');
+			]]>
+			</ahd:func>
+		</div>
 	</div>
 	
 	<xhtml:script type="text/javascript" src="ahd.js" />
