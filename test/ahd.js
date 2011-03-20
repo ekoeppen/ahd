@@ -1,15 +1,38 @@
-var functions, i;
-functions = document.getElementsByTagName("func");
-for (i = 0; i < functions.length; i++) {
-	n = functions[i].getAttribute("name");
-	functions[i].parentNode[n] = Function("args", functions[i].textContent);
-}
+Node.prototype.parentLookup = function(element, name) {
+    return undefined;
+};
 
-Node.prototype.call = function(name, args) {
-	this[name](args);
-}
+Node.prototype.prime = function (element) {
+    var i, node;
+    this.primed = true;
+    for (i = 0; i < this.childNodes.length; i++) {
+		node = this.childNodes[i];
+		if (node.localName == "func") {
+            this[node.getAttribute("name")] = new Function("args", node.textContent);
+		}
+    }
+};
 
-Node.prototype.get = function(n) {
+Node.prototype.noSuchMethod = function(name, args) {
+    console.log("*** Error: called unknown function " + name);
+};
+
+Node.prototype.call$ = function(name, args) {
+    var r, node;
+    
+    if (this[name]) {
+	    r = this[name](args);
+    } else if (this.primed) {
+        node = this.parentLookup('func', name);
+        if (node) node.call$(name, args); else this.noSuchMethod(name, args);
+    } else {
+        this.prime();
+        this.call$(name, args);
+    }
+    return r;
+};
+
+Node.prototype.get$ = function(n) {
 	var j, node;
 	for (j = 0; j < this.childNodes.length; j++) {
 		node = this.childNodes[j];
@@ -17,9 +40,9 @@ Node.prototype.get = function(n) {
 			return node.textContent;
 		}
 	}
-}
+};
 
-Node.prototype.set = function(n, v) {
+Node.prototype.set$ = function(n, v) {
 	var j, node;
 	for (j = 0; j < this.childNodes.length; j++) {
 		node = this.childNodes[j];
@@ -27,8 +50,8 @@ Node.prototype.set = function(n, v) {
 			node.textContent = v;
 		}
 	}
-}
+};
 
-document.getElementsByTagName("div")[0].addEventListener('click', function() {
-	this.call('bar', {x: 3});
+document.getElementsByTagName("div")[1].addEventListener('click', function() {
+	this.call$('bar', {x: 3});
 }, false);
